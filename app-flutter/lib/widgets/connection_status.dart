@@ -8,31 +8,43 @@ class ConnectionStatus extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final nodeIp = ref.watch(nodeIpProvider);
+    final isConnected = nodeIp != null;
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       decoration: BoxDecoration(
-        color: nodeIp != null ? Colors.green.withValues(alpha: 0.1) : Colors.red.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(20),
+        color: (isConnected ? Colors.greenAccent : Colors.redAccent).withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: nodeIp != null ? Colors.green : Colors.red,
+          color: (isConnected ? Colors.greenAccent : Colors.redAccent).withValues(alpha: 0.2),
         ),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            nodeIp != null ? Icons.link : Icons.link_off,
-            size: 16,
-            color: nodeIp != null ? Colors.green : Colors.red,
+          Container(
+            width: 8,
+            height: 8,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: isConnected ? Colors.greenAccent : Colors.redAccent,
+              boxShadow: isConnected ? [
+                BoxShadow(
+                  color: Colors.greenAccent.withValues(alpha: 0.4),
+                  blurRadius: 4,
+                  spreadRadius: 1,
+                )
+              ] : [],
+            ),
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: 12),
           Text(
-            nodeIp ?? 'Not Connected',
+            isConnected ? 'HUB AT $nodeIp' : 'HUB OFFLINE',
             style: TextStyle(
-              fontSize: 12,
+              fontSize: 10,
+              letterSpacing: 1.5,
               fontWeight: FontWeight.bold,
-              color: nodeIp != null ? Colors.green : Colors.red,
+              color: isConnected ? Colors.greenAccent : Colors.redAccent,
             ),
           ),
         ],

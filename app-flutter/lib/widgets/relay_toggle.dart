@@ -14,7 +14,6 @@ class _RelayToggleState extends ConsumerState<RelayToggle> {
   @override
   void initState() {
     super.initState();
-    // Fetch initial state when widget is first built
     Future.microtask(() => 
       ref.read(relayProvider.notifier).fetchInitialState(widget.boardId)
     );
@@ -28,28 +27,31 @@ class _RelayToggleState extends ConsumerState<RelayToggle> {
     return Column(
       children: [
         const Text(
-          'Relay Control',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          'RELAY CONTROL',
+          style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 2),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 24),
         Transform.scale(
-          scale: 2.0,
+          scale: 2.5,
           child: Switch(
             value: isOn,
             onChanged: (_) {
               ref.read(relayProvider.notifier).toggle(widget.boardId);
             },
-            activeThumbColor: Colors.green,
-            inactiveThumbColor: Colors.red,
+            activeColor: Colors.white,
+            activeTrackColor: Colors.greenAccent,
+            inactiveThumbColor: Colors.grey[400],
+            inactiveTrackColor: Colors.grey[800],
           ),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 32),
         Text(
-          isOn ? 'ON' : 'OFF',
+          isOn ? 'ACTIVE' : 'INACTIVE',
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,
-            color: isOn ? Colors.green : Colors.red,
+            letterSpacing: 1,
+            color: isOn ? Colors.greenAccent : Colors.grey[600],
           ),
         ),
       ],

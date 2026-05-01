@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import '../models/pzem.dart';
 
@@ -19,8 +20,16 @@ class SocketService {
     _channel = WebSocketChannel.connect(uri);
 
     return _channel!.stream.map((data) {
-      final json = jsonDecode(data);
-      return Pzem.fromJson(json);
+      if (data == null || data.toString().isEmpty) {
+        return Pzem.zero();
+      }
+      try {
+        final json = jsonDecode(data.toString());
+        return Pzem.fromJson(json);
+      } catch (e) {
+        debugPrint('WebSocket JSON parse error: $e. Data received: "$data"');
+        return Pzem.zero();
+      }
     });
   }
 

@@ -23,8 +23,23 @@ class SmartBoardApp extends ConsumerWidget {
       title: 'SmartBoard Control',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+        brightness: Brightness.dark,
+        scaffoldBackgroundColor: const Color(0xFF12121A),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.green,
+          brightness: Brightness.dark,
+          primary: Colors.greenAccent,
+          secondary: Colors.green,
+          surface: const Color(0xFF1E1E26),
+        ),
         useMaterial3: true,
+        cardTheme: CardThemeData(
+          color: const Color(0xFF1E1E26),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          elevation: 0,
+        ),
       ),
       home: const DashboardScreen(),
     );
