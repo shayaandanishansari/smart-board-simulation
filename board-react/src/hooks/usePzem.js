@@ -1,10 +1,11 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import useBoardStore from '../store/boardStore';
 import { generatePzemReading } from '../simulation/pzemGenerator';
 import { connectPzemSocket } from '../services/socket';
 
 const usePzem = (boardId) => {
   const { getBoard, updateBoard } = useBoardStore();
+  const [reading, setReading] = useState({ voltage: 0, current: 0, power: 0, frequency: 0, pf: 0, energy: 0 });
   const socketRef = useRef(null);
   const intervalRef = useRef(null);
 
@@ -15,17 +16,18 @@ const usePzem = (boardId) => {
     // Connect to Node WebSocket for PZEM streaming
     socketRef.current = connectPzemSocket(boardId);
 
-    // Generation loop (every 1 second)
+    // Generation loop (every 2 seconds to match new design)
     intervalRef.current = setInterval(() => {
       const currentBoard = useBoardStore.getState().getBoard(boardId);
       if (!currentBoard) return;
 
-      const reading = generatePzemReading(currentBoard);
+      const newReading = generatePzemReading(currentBoard);
+      setReading(newReading);
       
       // Update local energy accumulator
-      if (reading.energyIncrement) {
+      if (newReading.energyIncrement) {
         updateBoard(boardId, { 
-          energy_accumulator: reading.energy 
+          energy_accumulator: newReading.energy 
         });
       }
 
@@ -33,10 +35,10 @@ const usePzem = (boardId) => {
       if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
         socketRef.current.send(JSON.stringify({
           board_id: boardId,
-          ...reading
+          ...newReading
         }));
       }
-    }, 1000);
+    }, 2000);
 
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
@@ -44,7 +46,7 @@ const usePzem = (boardId) => {
     };
   }, [boardId]);
 
-  return null;
+  return reading;
 };
 
 export default usePzem;

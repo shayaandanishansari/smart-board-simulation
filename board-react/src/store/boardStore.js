@@ -11,7 +11,7 @@ const useBoardStore = create(
           ...board,
           mains: true,
           mcb: true,
-          rocker: false,
+          rocker: true,
           relay_state: false,
           energy_accumulator: 0, // kWh
         }] 
