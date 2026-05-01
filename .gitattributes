@@ -1,0 +1,7 @@
+# Mark platform-specific folders as vendored to exclude them from language statistics
+app-flutter/android/* linguist-vendored
+app-flutter/ios/* linguist-vendored
+app-flutter/linux/* linguist-vendored
+app-flutter/macos/* linguist-vendored
+app-flutter/windows/* linguist-vendored
+app-flutter/web/* linguist-vendored
