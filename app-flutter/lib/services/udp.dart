@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:udp/udp.dart';
 
 class UdpService {
@@ -16,16 +17,20 @@ class UdpService {
 
     // Listen for response
     String? nodeIp;
-    await sender.asStream(timeout: const Duration(seconds: 3)).firstWhere((datagram) {
-      if (datagram != null) {
-        final message = utf8.decode(datagram.data);
-        if (message.startsWith('SMARTBOARD_NODE_IP:')) {
-          nodeIp = message.split(':')[1];
-          return true;
+    try {
+      await sender.asStream(timeout: const Duration(seconds: 3)).firstWhere((datagram) {
+        if (datagram != null) {
+          final message = utf8.decode(datagram.data);
+          if (message.startsWith('SMARTBOARD_NODE_IP:')) {
+            nodeIp = message.split(':')[1];
+            return true;
+          }
         }
-      }
-      return false;
-    }).timeout(const Duration(seconds: 3), onTimeout: () => null as Datagram?);
+        return false;
+      }).timeout(const Duration(seconds: 3));
+    } catch (e) {
+      // Timeout or other network error
+    }
 
     sender.close();
     return nodeIp;
