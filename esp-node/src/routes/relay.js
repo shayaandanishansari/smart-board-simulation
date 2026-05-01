@@ -7,7 +7,8 @@ const { validatePin } = require('../utils/validator');
 // Flutter must provide PIN. React might not.
 router.get('/:board_id', (req, res, next) => {
     // If PIN is provided, validate it.
-    if (req.headers['x-pin'] || req.query.pin || req.body.pin) {
+    const pin = req.headers['x-pin'] || req.query.pin || (req.body && req.body.pin);
+    if (pin) {
         return validatePin(req, res, next);
     }
     next();

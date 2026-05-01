@@ -1,16 +1,17 @@
-import { io } from 'socket.io-client';
-
-const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'http://localhost:3000';
-
-const socket = io(SOCKET_URL, {
-  autoConnect: false,
-});
+const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'ws://localhost:3000';
 
 export const connectPzemSocket = (boardId) => {
-  const pzemSocket = io(`${SOCKET_URL}/pzem`, {
-    query: { boardId },
-  });
-  return pzemSocket;
+  const ws = new WebSocket(`${SOCKET_URL}/pzem/${boardId}`);
+  
+  ws.onopen = () => {
+    console.log(`React PZEM WebSocket connected for board: ${boardId}`);
+  };
+
+  ws.onerror = (error) => {
+    console.error('WebSocket Error:', error);
+  };
+
+  return ws;
 };
 
-export default socket;
+export default connectPzemSocket;

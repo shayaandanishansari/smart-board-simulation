@@ -2,11 +2,12 @@ import 'dart:convert';
 import 'package:udp/udp.dart';
 
 class UdpService {
-  static const int port = 4210;
+  static const int discoveryPort = 4210;
+  static const int pairingPort = 4211;
 
   static Future<String?> discoverNode() async {
     final sender = await UDP.bind(Endpoint.any(port: Port(0)));
-    final broadcastEndpoint = Endpoint.broadcast(port: Port(port));
+    final broadcastEndpoint = Endpoint.broadcast(port: Port(discoveryPort));
     
     await sender.send(
       utf8.encode('DISCOVER_SMARTBOARD_NODE'),
@@ -24,14 +25,14 @@ class UdpService {
         }
       }
       return false;
-    }).timeout(const Duration(seconds: 3), onTimeout: () => null);
+    }).timeout(const Duration(seconds: 3), onTimeout: () => null as Datagram?);
 
     sender.close();
     return nodeIp;
   }
 
   static Stream<String> listenForPairing() async* {
-    final receiver = await UDP.bind(Endpoint.any(port: Port(port)));
+    final receiver = await UDP.bind(Endpoint.any(port: Port(pairingPort)));
     
     await for (final datagram in receiver.asStream()) {
       if (datagram != null) {

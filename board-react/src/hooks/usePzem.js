@@ -14,7 +14,6 @@ const usePzem = (boardId) => {
 
     // Connect to Node WebSocket for PZEM streaming
     socketRef.current = connectPzemSocket(boardId);
-    socketRef.current.connect();
 
     // Generation loop (every 1 second)
     intervalRef.current = setInterval(() => {
@@ -31,17 +30,17 @@ const usePzem = (boardId) => {
       }
 
       // Stream to Node if connected
-      if (socketRef.current && socketRef.current.connected) {
-        socketRef.current.emit('pzem_data', {
+      if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
+        socketRef.current.send(JSON.stringify({
           board_id: boardId,
           ...reading
-        });
+        }));
       }
     }, 1000);
 
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
-      if (socketRef.current) socketRef.current.disconnect();
+      if (socketRef.current) socketRef.current.close();
     };
   }, [boardId]);
 

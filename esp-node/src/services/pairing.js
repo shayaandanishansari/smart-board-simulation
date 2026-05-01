@@ -2,7 +2,8 @@ const dgram = require('dgram');
 const { generatePin } = require('../utils/pin');
 const queries = require('../db/queries');
 
-const UDP_PORT = 41234; // Example port for UDP
+const DISCOVERY_PORT = 4210; 
+const BROADCAST_PORT = 4211; // Separate port for broadcasting to Flutter
 
 const pairingService = {
     generateAndSetPin: (boardId) => {
@@ -17,13 +18,12 @@ const pairingService = {
 
     broadcastPairRequest: (boardId) => {
         const client = dgram.createSocket('udp4');
-        const message = JSON.stringify({ event: 'pair_request', board_id: boardId });
+        const message = `PAIR_REQUEST:${boardId}`;
         
         client.bind(() => {
             client.setBroadcast(true);
-            // In a real scenario, we'd broadcast to the subnet. 
-            // For simulation, we can broadcast to 255.255.255.255
-            client.send(message, UDP_PORT, '255.255.255.255', (err) => {
+            // Flutter will listen on BROADCAST_PORT
+            client.send(message, BROADCAST_PORT, '255.255.255.255', (err) => {
                 if (err) console.error('UDP Broadcast error:', err);
                 client.close();
             });
@@ -34,19 +34,15 @@ const pairingService = {
         const server = dgram.createSocket('udp4');
 
         server.on('message', (msg, rinfo) => {
-            try {
-                const data = JSON.parse(msg.toString());
-                if (data.event === 'discover_node') {
-                    const response = JSON.stringify({ event: 'node_info', ip: '127.0.0.1', port: 3000 }); // Replace with actual IP/Port
-                    server.send(response, rinfo.port, rinfo.address);
-                }
-            } catch (e) {
-                // Ignore non-JSON or malformed messages
+            const message = msg.toString();
+            if (message === 'DISCOVER_SMARTBOARD_NODE') {
+                const response = `SMARTBOARD_NODE_IP:127.0.0.1`; 
+                server.send(response, rinfo.port, rinfo.address);
             }
         });
 
-        server.bind(UDP_PORT, () => {
-            console.log(`UDP Discovery listener active on port ${UDP_PORT}`);
+        server.bind(DISCOVERY_PORT, () => {
+            console.log(`UDP Discovery listener active on port ${DISCOVERY_PORT}`);
         });
     }
 };
