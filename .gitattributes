@@ -1,7 +1,19 @@
-# Mark platform-specific folders as vendored to exclude them from language statistics
-app-flutter/android/* linguist-vendored
-app-flutter/ios/* linguist-vendored
-app-flutter/linux/* linguist-vendored
-app-flutter/macos/* linguist-vendored
-app-flutter/windows/* linguist-vendored
-app-flutter/web/* linguist-vendored
+# Tell GitHub to ignore platform-specific native code when calculating language statistics
+app-flutter/windows/**/* linguist-detectable=false
+app-flutter/linux/**/* linguist-detectable=false
+app-flutter/macos/**/* linguist-detectable=false
+app-flutter/android/**/* linguist-detectable=false
+app-flutter/ios/**/* linguist-detectable=false
+app-flutter/web/**/* linguist-detectable=false
+
+# Also ignore build artifacts
+app-flutter/build/ export-ignore
+**/build/ export-ignore
+
+# Ignore generated plugin registrant files
+app-flutter/**/generated_plugin_registrant.* linguist-detectable=false
+
+# Additional generated files
+app-flutter/**/generated_plugins.* linguist-detectable=false
+app-flutter/**/Pods/**/* linguist-detectable=false
+app-flutter/ios/.symlinks/**/* linguist-detectable=false
