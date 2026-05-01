@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'storage/app_storage.dart';
 import 'state/board_provider.dart';
-import 'screens/board_screen.dart';
-import 'screens/pairing_screen.dart';
+import 'screens/dashboard_screen.dart';
 import 'services/udp.dart';
 
 void main() async {
@@ -17,18 +16,17 @@ class SmartBoardApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final board = ref.watch(boardProvider);
-
-    // Initial discovery if not already done
+    // Discovery runs in background
     _initialDiscovery(ref);
 
     return MaterialApp(
       title: 'SmartBoard Control',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
       ),
-      home: board == null ? const PairingScreen() : const BoardScreen(),
+      home: const DashboardScreen(),
     );
   }
 

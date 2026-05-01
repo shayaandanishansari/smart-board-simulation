@@ -2,24 +2,38 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/board.dart';
 import '../storage/app_storage.dart';
 
-class BoardNotifier extends Notifier<Board?> {
+class BoardListNotifier extends Notifier<List<Board>> {
   @override
-  Board? build() {
-    return AppStorage.getPairedBoard();
+  List<Board> build() {
+    return AppStorage.getPairedBoards();
   }
 
-  void setBoard(Board board) {
-    state = board;
-    AppStorage.savePairedBoard(board);
+  void addBoard(Board board) {
+    state = [...state.where((b) => b.boardId != board.boardId), board];
+    AppStorage.saveBoard(board);
+  }
+
+  void removeBoard(String boardId) {
+    state = state.where((b) => b.boardId != boardId).toList();
+    AppStorage.removeBoard(boardId);
   }
 
   void clear() {
-    state = null;
+    state = [];
     AppStorage.clear();
   }
 }
 
-final boardProvider = NotifierProvider<BoardNotifier, Board?>(BoardNotifier.new);
+final boardListProvider = NotifierProvider<BoardListNotifier, List<Board>>(BoardListNotifier.new);
+
+class SelectedBoardNotifier extends Notifier<Board?> {
+  @override
+  Board? build() => null;
+
+  void select(Board? board) => state = board;
+}
+
+final selectedBoardProvider = NotifierProvider<SelectedBoardNotifier, Board?>(SelectedBoardNotifier.new);
 
 class NodeIpNotifier extends Notifier<String?> {
   @override

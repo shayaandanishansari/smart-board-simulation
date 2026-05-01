@@ -3,11 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../state/pzem_provider.dart';
 
 class PzemDisplay extends ConsumerWidget {
-  const PzemDisplay({super.key});
+  final String boardId;
+  const PzemDisplay({super.key, required this.boardId});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final pzemAsync = ref.watch(pzemProvider);
+    final pzemAsync = ref.watch(pzemProvider(boardId));
 
     return pzemAsync.when(
       data: (pzem) => GridView.count(

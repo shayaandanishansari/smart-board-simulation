@@ -40,12 +40,25 @@ class _PairingScreenState extends ConsumerState<PairingScreen> {
   }
 
   void _onPair() {
-    if (_discoveredBoardId != null && _pinController.text.isNotEmpty) {
+    final discoveredId = _discoveredBoardId;
+    if (discoveredId != null && _pinController.text.isNotEmpty) {
+      final String shortId = discoveredId.length > 4 
+          ? discoveredId.substring(discoveredId.length - 4) 
+          : discoveredId;
+          
       final board = Board(
-        boardId: _discoveredBoardId!,
+        boardId: discoveredId,
         pin: _pinController.text,
+        name: 'Board $shortId',
       );
-      ref.read(boardProvider.notifier).setBoard(board);
+      
+      ref.read(boardListProvider.notifier).addBoard(board);
+      
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Paired with ${board.boardId}')),
+      );
+      
+      Navigator.pop(context);
     }
   }
 

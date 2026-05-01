@@ -3,11 +3,13 @@ import '../models/pzem.dart';
 import '../services/socket.dart';
 import 'board_provider.dart';
 
-final pzemProvider = StreamProvider<Pzem>((ref) {
-  final board = ref.watch(boardProvider);
+final pzemProvider = StreamProvider.family<Pzem, String>((ref, boardId) {
+  final boards = ref.watch(boardListProvider);
   final nodeIp = ref.watch(nodeIpProvider);
 
-  if (board == null || nodeIp == null) {
+  final board = boards.firstWhere((b) => b.boardId == boardId, orElse: () => throw 'Board not found');
+
+  if (nodeIp == null) {
     return Stream.value(Pzem.zero());
   }
 
