@@ -10,6 +10,7 @@ export const boardApi = {
   createBoard: (boardData) => api.post('/board', boardData),
   getRelayState: (boardId) => api.get(`/relay/${boardId}`),
   pairBoard: (boardId) => api.post(`/pair/${boardId}`),
+  deleteBoard: (boardId) => api.delete(`/board/${boardId}`),
 };
 
 export default api;

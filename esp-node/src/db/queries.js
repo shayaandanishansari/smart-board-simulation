@@ -27,6 +27,10 @@ const queries = {
 
     getAllBoards: () => {
         return db.prepare('SELECT * FROM boards').all();
+    },
+
+    deleteBoard: (boardId) => {
+        return db.prepare('DELETE FROM boards WHERE board_id = ?').run(boardId);
     }
 };
 

@@ -93,7 +93,7 @@ class DashboardScreen extends ConsumerWidget {
                                 MaterialPageRoute(builder: (_) => const BoardScreen()),
                               );
                             },
-                            onLongPress: () => _showRemoveDialog(context, ref, board),
+                            onRemove: _showRemoveDialog,
                           );
                         },
                         childCount: boards.length,
@@ -193,7 +193,7 @@ class DashboardScreen extends ConsumerWidget {
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: const Color(0xFF1E1E26),
-        title: const Text('Remove Board?'),
+        title: const Text('Unpair Board?'),
         content: Text('Do you want to unpair ${board.boardId}?'),
         actions: [
           TextButton(
@@ -203,9 +203,12 @@ class DashboardScreen extends ConsumerWidget {
           TextButton(
             onPressed: () {
               ref.read(boardListProvider.notifier).removeBoard(board.boardId);
+              if (ref.read(selectedBoardProvider)?.boardId == board.boardId) {
+                ref.read(selectedBoardProvider.notifier).select(null);
+              }
               Navigator.pop(context);
             },
-            child: const Text('Remove', style: TextStyle(color: Colors.red)),
+            child: const Text('Unpair', style: TextStyle(color: Colors.redAccent)),
           ),
         ],
       ),

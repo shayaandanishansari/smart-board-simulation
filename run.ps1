@@ -14,6 +14,6 @@ Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd board-react; n
 Write-Host "Launching App-Flutter (Remote Control)..." -ForegroundColor Yellow
 # Note: Flutter usually requires a target device. 
 # We'll launch it and let the user pick or it will use the default.
-Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd app-flutter; flutter run"
+Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd app-flutter; flutter run -d windows"
 
 Write-Host "All processes initiated in separate windows." -ForegroundColor Green

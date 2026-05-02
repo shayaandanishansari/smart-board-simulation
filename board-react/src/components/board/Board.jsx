@@ -57,9 +57,18 @@ const Board = ({ boardId }) => {
 
   if (!board) return null;
 
-  const handleRemove = () => {
+  const handleRemove = async () => {
     if (window.confirm(`Remove board "${board.name}"?`)) {
-      removeBoard(boardId);
+      try {
+        await boardApi.deleteBoard(boardId);
+        removeBoard(boardId);
+      } catch (error) {
+        console.error('Failed to delete board from server:', error);
+        // Still remove locally if the user wants, or show error
+        if (window.confirm("Failed to delete from server. Remove locally anyway?")) {
+          removeBoard(boardId);
+        }
+      }
     }
   };
 

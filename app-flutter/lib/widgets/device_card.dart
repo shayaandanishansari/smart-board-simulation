@@ -7,13 +7,13 @@ import '../state/pzem_provider.dart';
 class DeviceCard extends ConsumerStatefulWidget {
   final Board board;
   final VoidCallback onTap;
-  final VoidCallback onLongPress;
+  final Function(BuildContext, WidgetRef, Board) onRemove;
 
   const DeviceCard({
     super.key,
     required this.board,
     required this.onTap,
-    required this.onLongPress,
+    required this.onRemove,
   });
 
   @override
@@ -37,7 +37,6 @@ class _DeviceCardState extends ConsumerState<DeviceCard> {
 
     return GestureDetector(
       onTap: widget.onTap,
-      onLongPress: widget.onLongPress,
       child: Card(
         margin: const EdgeInsets.only(bottom: 16),
         child: Padding(
@@ -81,6 +80,11 @@ class _DeviceCardState extends ConsumerState<DeviceCard> {
                       activeColor: Colors.white,
                       activeTrackColor: Colors.greenAccent,
                     ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.link_off, color: Colors.grey, size: 20),
+                    tooltip: 'Unpair',
+                    onPressed: () => widget.onRemove(context, ref, widget.board),
                   ),
                 ],
               ),

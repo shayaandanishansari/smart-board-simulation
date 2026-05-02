@@ -11,4 +11,10 @@ router.post('/', (req, res) => {
     res.json(board);
 });
 
+router.delete('/:board_id', (req, res) => {
+    const { board_id } = req.params;
+    boardService.deleteBoard(board_id);
+    res.json({ success: true });
+});
+
 module.exports = router;

@@ -22,6 +22,37 @@ class BoardScreen extends ConsumerWidget {
         title: Text(board.name ?? 'Device Details'),
         backgroundColor: Colors.transparent,
         elevation: 0,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
+            tooltip: 'Unpair Board',
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  backgroundColor: const Color(0xFF1E1E26),
+                  title: const Text('Unpair Board?'),
+                  content: Text('Do you want to unpair ${board.boardId}?'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text('Cancel'),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        ref.read(boardListProvider.notifier).removeBoard(board.boardId);
+                        ref.read(selectedBoardProvider.notifier).select(null);
+                        Navigator.pop(context); // Close dialog
+                        Navigator.pop(context); // Go back to dashboard
+                      },
+                      child: const Text('Unpair', style: TextStyle(color: Colors.redAccent)),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24.0),
